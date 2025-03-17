@@ -3,6 +3,7 @@ package Capstone.SafeWay.project.Global.Security.Jwt;
 import Capstone.SafeWay.project.Global.Security.UserDetailsServiceImpl;
 import Capstone.SafeWay.project.User.Dto.UserDetailsImpl;
 import io.jsonwebtoken.*;
+import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,21 +13,26 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 import javax.crypto.SecretKey;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+
+import java.security.Key;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 
 @Component
-@RequiredArgsConstructor
 public class JwtTokenProvider {
-
-    @Value("${jwt.secret}")
-    private String key;
 
     @Value("${jwt.expiration}")
     private long jwtExpirationMs;
 
+    private final Key key;
+
     private final UserDetailsServiceImpl userDetailsService;
+
+    public JwtTokenProvider(@Value("${jwt.secret}") String secret, UserDetailsServiceImpl userDetailsService){
+        this.key = Keys.hmacShaKeyFor(secret.getBytes());
+        this.userDetailsService = userDetailsService;
+    }
 
     public String generateToken(Authentication authentication) {
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
@@ -36,7 +42,7 @@ public class JwtTokenProvider {
                 .claim("id", userDetails.getUser().getId())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + jwtExpirationMs))
-                .signWith(SignatureAlgorithm.HS256, key)
+                .signWith(key, SignatureAlgorithm.ES256)
                 .compact();
     }
 
