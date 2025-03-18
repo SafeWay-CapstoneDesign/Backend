@@ -2,6 +2,9 @@ package Capstone.SafeWay.project.Global.Security.Jwt;
 
 import Capstone.SafeWay.project.Global.Security.UserDetailsServiceImpl;
 import Capstone.SafeWay.project.User.Dto.UserDetailsImpl;
+import Capstone.SafeWay.project.User.Exception.UserNotFoundException;
+import Capstone.SafeWay.project.User.UserEntity;
+import Capstone.SafeWay.project.User.UserRepository;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletRequest;
@@ -22,6 +25,7 @@ import java.util.Date;
 @Component
 public class JwtTokenProvider {
 
+    private final UserRepository userRepository;
     @Value("${jwt.expiration}")
     private long jwtExpirationMs;
 
@@ -29,9 +33,10 @@ public class JwtTokenProvider {
 
     private final UserDetailsServiceImpl userDetailsService;
 
-    public JwtTokenProvider(@Value("${jwt.secret}") String secret, UserDetailsServiceImpl userDetailsService){
+    public JwtTokenProvider(@Value("${jwt.secret}") String secret, UserDetailsServiceImpl userDetailsService, UserRepository userRepository){
         this.key = Keys.hmacShaKeyFor(secret.getBytes());
         this.userDetailsService = userDetailsService;
+        this.userRepository = userRepository;
     }
 
     public String generateToken(Authentication authentication) {
@@ -42,7 +47,21 @@ public class JwtTokenProvider {
                 .claim("id", userDetails.getUser().getId())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + jwtExpirationMs))
-                .signWith(key, SignatureAlgorithm.ES256)
+                .signWith(key, SignatureAlgorithm.HS256)
+                .compact();
+    }
+
+    public String token(Long userId) {
+
+        UserEntity user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("유저 없음"));
+
+        return Jwts.builder()
+                .setSubject(user.getEmail())
+                .claim("id", user.getId())
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + jwtExpirationMs))
+                .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }
 

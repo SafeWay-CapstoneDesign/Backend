@@ -1,6 +1,8 @@
 package Capstone.SafeWay.project.User;
+import Capstone.SafeWay.project.Global.Security.Jwt.JwtTokenProvider;
 import Capstone.SafeWay.project.User.Dto.BasicUserDto;
 import Capstone.SafeWay.project.User.Dto.DetailUserDto;
+import Capstone.SafeWay.project.User.Dto.TokenResponseDto;
 import Capstone.SafeWay.project.User.Dto.UserDetailsImpl;
 import Capstone.SafeWay.project.User.UserEntity;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
+    private final JwtTokenProvider jwtTokenProvider;
 
     // 회원가입
     @PostMapping
@@ -31,5 +34,10 @@ public class UserController {
     public String checkUser(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         log.info("UserDetails: {}", userDetails.getUsername());
         return "성공ㅋ";
+    }
+
+    @GetMapping("/jwt")
+    public String getToken(@RequestParam Long userId){
+        return jwtTokenProvider.token(userId);
     }
 }
