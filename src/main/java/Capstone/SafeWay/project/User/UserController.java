@@ -22,18 +22,57 @@ public class UserController {
     private final UserService userService;
     private final JwtTokenProvider jwtTokenProvider;
 
-    // 회원가입
+    // 회원가입 (누구나 가능)
     @PostMapping
     public ResponseEntity<String> createUser(@RequestBody BasicUserDto basicUserDto) {
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(userService.createMember(basicUserDto));
+        log.info("회원가입 요청: {}", basicUserDto.getEmail());
+        String response = userService.createMember(basicUserDto);
+        log.info("회원가입 완료: {}", basicUserDto.getEmail());
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    
+    // 내 정보 조회 (본인만 가능)
     @GetMapping
-    public String checkUser(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-        log.info("UserDetails: {}", userDetails.getUsername());
-        return "성공ㅋ";
+    public ResponseEntity<DetailUserDto> getUser() {
+        UserDetailsImpl currentUser = getAuthenticatedUser();
+        log.info("현재 로그인된 사용자: {}", currentUser.getUsername());
+        DetailUserDto userDto = userService.getUser(currentUser.getUser());
+        return ResponseEntity.ok(userDto);
+    }
+
+    // 내 정보 수정 (본인만 가능)
+    @PutMapping
+    public ResponseEntity<String> updateUser(@RequestBody BasicUserDto basicUserDto) {
+        UserDetailsImpl currentUser = getAuthenticatedUser();
+        log.info("사용자 정보 수정 요청: {}", currentUser.getUsername());
+        String response = userService.updateMember(basicUserDto, currentUser.getUser());
+        log.info("사용자 정보 수정 완료: {}", currentUser.getUsername());
+        return ResponseEntity.ok().body(response);
+    }
+
+    //  내 계정 삭제 (본인만 가능)
+    @DeleteMapping
+    public ResponseEntity<Void> deleteUser() {
+        UserDetailsImpl currentUser = getAuthenticatedUser();
+        log.info("사용자 삭제 요청: {}", currentUser.getUsername());
+        userService.deleteUser(currentUser.getUser());
+        log.info("사용자 삭제 완료: {}", currentUser.getUsername());
+        return ResponseEntity.noContent().build();
+    }
+
+    // 현재 로그인한 사용자 가져오기
+    private UserDetailsImpl getAuthenticatedUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new RuntimeException("Unauthorized: No user logged in");
+        }
+
+        Object principal = authentication.getPrincipal();
+        if (principal instanceof UserDetailsImpl) {
+            return (UserDetailsImpl) principal;
+        } else {
+            throw new RuntimeException("Unexpected principal type: " + principal.getClass().getSimpleName());
+        }
     }
 
     @GetMapping("/jwt")
