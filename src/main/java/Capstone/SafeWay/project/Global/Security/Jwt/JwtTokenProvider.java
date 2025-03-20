@@ -1,7 +1,7 @@
 package Capstone.SafeWay.project.Global.Security.Jwt;
 
 import Capstone.SafeWay.project.Global.Security.UserDetailsServiceImpl;
-import Capstone.SafeWay.project.User.Dto.UserDetailsImpl;
+import Capstone.SafeWay.project.Global.Security.UserDetailsImpl;
 import Capstone.SafeWay.project.User.Exception.UserNotFoundException;
 import Capstone.SafeWay.project.User.UserEntity;
 import Capstone.SafeWay.project.User.UserRepository;

@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -48,11 +49,28 @@ public class UserConnectionService {
         return new UserConnectionDto(connection.getId(), connection.getGuardianId(), connection.getStarId(), connection.getConnectedAt());
     }
 
-    // 연결 삭제
-    public void deleteConnection(Long id) {
-        if (!userConnectionRepository.existsById(id)) {
-            throw new RuntimeException("Connection not found");
+    public void deleteConnectionByUser(Long currentUserId) {
+        // 현재 로그인된 사용자가 guardian_id 또는 star_id에 있는 연결 찾기
+        Optional<UserConnectionEntity> connection = userConnectionRepository
+                .findByGuardianId(currentUserId)
+                .stream()
+                .findFirst()
+                .or(() -> userConnectionRepository.findByStarId(currentUserId).stream().findFirst());
+
+        if (connection.isEmpty()) {
+            throw new RuntimeException("현재 사용자와 연결된 관계가 없습니다.");
         }
-        userConnectionRepository.deleteById(id);
+
+        UserConnectionEntity connectionEntity = connection.get();
+
+        // 연결된 상대방 ID 가져오기
+        Long otherUserId = connectionEntity.getGuardianId().equals(currentUserId) ?
+                connectionEntity.getStarId() : connectionEntity.getGuardianId();
+
+        UserEntity otherUser = userRepository.findById(otherUserId)
+                .orElseThrow(() -> new RuntimeException("상대방 정보가 존재하지 않습니다."));
+
+        // 연결 삭제
+        userConnectionRepository.delete(connectionEntity);
     }
 }

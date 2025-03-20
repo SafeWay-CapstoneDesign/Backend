@@ -1,12 +1,9 @@
 package Capstone.SafeWay.project.Global.Security;
 
-import Capstone.SafeWay.project.User.Dto.UserDetailsImpl;
 import Capstone.SafeWay.project.User.Exception.UserNotFoundException;
 import Capstone.SafeWay.project.User.UserEntity;
 import Capstone.SafeWay.project.User.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;

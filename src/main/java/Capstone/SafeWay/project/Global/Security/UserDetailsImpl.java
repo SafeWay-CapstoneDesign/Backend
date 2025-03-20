@@ -1,4 +1,4 @@
-package Capstone.SafeWay.project.User.Dto;
+package Capstone.SafeWay.project.Global.Security;
 
 import Capstone.SafeWay.project.User.UserEntity;
 import lombok.AllArgsConstructor;

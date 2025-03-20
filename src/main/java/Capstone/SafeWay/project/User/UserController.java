@@ -2,15 +2,12 @@ package Capstone.SafeWay.project.User;
 import Capstone.SafeWay.project.Global.Security.Jwt.JwtTokenProvider;
 import Capstone.SafeWay.project.User.Dto.BasicUserDto;
 import Capstone.SafeWay.project.User.Dto.DetailUserDto;
-import Capstone.SafeWay.project.User.Dto.TokenResponseDto;
-import Capstone.SafeWay.project.User.Dto.UserDetailsImpl;
-import Capstone.SafeWay.project.User.UserEntity;
+import Capstone.SafeWay.project.Global.Security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
