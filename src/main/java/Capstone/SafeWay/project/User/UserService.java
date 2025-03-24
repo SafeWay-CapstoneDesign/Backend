@@ -2,6 +2,7 @@ package Capstone.SafeWay.project.User;
 
 import Capstone.SafeWay.project.User.Dto.BasicUserDto;
 import Capstone.SafeWay.project.User.Dto.DetailUserDto;
+import Capstone.SafeWay.project.User.Dto.FcmTokenRequestDto;
 import Capstone.SafeWay.project.User.Exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
@@ -81,4 +82,12 @@ public class UserService {
     private boolean isAdmin(UserEntity user) {
         return "ADMIN".equals(user.getRole());
     }
+
+    // FcmToken 가져오는 메서드
+    public void saveFcmToken(FcmTokenRequestDto dto) {
+        UserEntity user = userRepository.findById(dto.getUserId())
+                .orElseThrow(() -> new IllegalArgumentException("사용자 없음"));
+        user.updateFcmToken(dto.getToken());
+    }
+
 }

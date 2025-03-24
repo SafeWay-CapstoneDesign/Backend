@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-@Slf4j // ✅ 로그 추가
+@Slf4j
 @RestController
 @RequestMapping("/user-connections")
 @RequiredArgsConstructor

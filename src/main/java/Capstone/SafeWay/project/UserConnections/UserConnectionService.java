@@ -16,10 +16,15 @@ public class UserConnectionService {
     private final UserConnectionRepository userConnectionRepository;
     private final UserRepository userRepository;
 
-    // 보호자-사용자 연결 생성
     public void createConnection(String guardianEmail, Long starId) {
         UserEntity guardian = userRepository.findByEmail(guardianEmail)
                 .orElseThrow(() -> new RuntimeException("Guardian not found"));
+
+        // 이미 해당 guardianId와 starId 조합이 있는지 확인
+        boolean exists = userConnectionRepository.existsByGuardianIdAndStarId(guardian.getId(), starId);
+        if (exists) {
+            throw new IllegalStateException("이미 해당 사용자와 보호자가 연결되어 있습니다.");
+        }
 
         UserConnectionEntity connection = new UserConnectionEntity(guardian.getId(), starId);
         userConnectionRepository.save(connection);

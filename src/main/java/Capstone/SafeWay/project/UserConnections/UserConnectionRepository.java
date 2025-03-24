@@ -6,4 +6,5 @@ import java.util.List;
 public interface UserConnectionRepository extends JpaRepository<UserConnectionEntity, Long> {
     List<UserConnectionEntity> findByGuardianId(Long guardianId);
     List<UserConnectionEntity> findByStarId(Long starId);
+    boolean existsByGuardianIdAndStarId(Long guardianId, Long starId);
 }

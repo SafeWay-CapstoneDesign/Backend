@@ -28,6 +28,9 @@ public class UserEntity {
     @Column(length = 50)
     private String role;
 
+    @Column(length = 512)
+    private String fcmToken;
+
     public UserEntity(String email, String encode, String username, String phone, String role) {
         this.email = email;
         this.password = encode;
@@ -36,13 +39,17 @@ public class UserEntity {
         this.role = role;
     }
 
-    public void updateUser(String email, String password, String username,String phone, String role) {
+    public void updateUser(String email, String password, String username, String phone, String role) {
         this.email = email;
-        if (password != null && !password.isEmpty()) { // 비밀번호가 있을 때만 업데이트
+        if (password != null && !password.isEmpty()) {
             this.password = password;
         }
         this.username = username;
         this.phone = phone;
         this.role = role;
+    }
+
+    public void updateFcmToken(String token) {
+        this.fcmToken = token;
     }
 }

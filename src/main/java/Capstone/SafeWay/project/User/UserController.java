@@ -3,6 +3,7 @@ import Capstone.SafeWay.project.Global.Security.Jwt.JwtTokenProvider;
 import Capstone.SafeWay.project.User.Dto.BasicUserDto;
 import Capstone.SafeWay.project.User.Dto.DetailUserDto;
 import Capstone.SafeWay.project.Global.Security.UserDetailsImpl;
+import Capstone.SafeWay.project.User.Dto.FcmTokenRequestDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -76,4 +77,11 @@ public class UserController {
     public String getToken(@RequestParam Long userId){
         return jwtTokenProvider.token(userId);
     }
+
+    @PostMapping("/token")
+    public ResponseEntity<String> saveFcmToken(@RequestBody FcmTokenRequestDto dto) {
+        userService.saveFcmToken(dto);
+        return ResponseEntity.ok("토큰 저장 완료");
+    }
+
 }
