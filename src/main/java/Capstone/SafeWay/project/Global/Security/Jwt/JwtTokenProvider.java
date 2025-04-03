@@ -9,6 +9,7 @@ import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -22,6 +23,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 
+@Slf4j
 @Component
 public class JwtTokenProvider {
 
@@ -56,6 +58,8 @@ public class JwtTokenProvider {
 
         UserEntity user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("유저 없음"));
+
+        log.info("토큰 유저 찾음");
 
         return Jwts.builder()
                 .setSubject(user.getEmail())
@@ -111,7 +115,7 @@ public class JwtTokenProvider {
                 .toList();
 
         UserDetailsImpl userDetails = userDetailsService.loadUserByUsername(getEmailFromToken(accessToken));
-        return new UsernamePasswordAuthenticationToken(userDetails, "", authorities);
+        return new UsernamePasswordAuthenticationToken(userDetails, null, authorities);
     }
 
     public Claims getClaims(String accessToken){

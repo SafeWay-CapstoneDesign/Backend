@@ -13,6 +13,14 @@ java {
 	}
 }
 
+bootJar {
+	enabled = true
+}
+
+jar {
+	enabled = false
+}
+
 configurations {
 	compileOnly {
 		extendsFrom annotationProcessor
@@ -24,39 +32,45 @@ repositories {
 }
 
 dependencies {
+	// Spring Boot
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-	compileOnly 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+
+	// DB (MySQL or MariaDB)
 	runtimeOnly 'com.mysql:mysql-connector-j'
+	implementation 'org.mariadb.jdbc:mariadb-java-client:3.1.2'
+	runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
+
+	// Lombok
+	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
+
+	// 테스트
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'org.mariadb.jdbc:mariadb-java-client:3.1.2' // MariaDB JDBC 드라이버
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-
-	runtimeOnly 'org.mariadb.jdbc:mariadb-java-client' // 런타임 의존성 추가
-
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-
+	// Servlet API (JWT 인증 필터 등 필요 시)
 	implementation 'jakarta.servlet:jakarta.servlet-api:6.0.0'
-
 
 	// JWT
 	implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
 	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
 	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
 
-	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0' // Swagger
+	// Swagger (API 문서화)
+	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0'
 
+	// 외부 API 호출용
 	implementation 'com.squareup.okhttp3:okhttp:4.12.0'
-
 }
 
 tasks.named('test') {
 	useJUnitPlatform()
+}
+
+springBoot {
+	mainClass = 'Capstone.SafeWay.SafeWayApplication'
 }

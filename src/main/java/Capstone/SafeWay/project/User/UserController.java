@@ -20,15 +20,6 @@ public class UserController {
     private final UserService userService;
     private final JwtTokenProvider jwtTokenProvider;
 
-    // 회원가입 (누구나 가능)
-    @PostMapping
-    public ResponseEntity<String> createUser(@RequestBody BasicUserDto basicUserDto) {
-        log.info("회원가입 요청: {}", basicUserDto.getEmail());
-        String response = userService.createMember(basicUserDto);
-        log.info("회원가입 완료: {}", basicUserDto.getEmail());
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
-    }
-
     // 내 정보 조회 (본인만 가능)
     @GetMapping
     public ResponseEntity<DetailUserDto> getUser() {
