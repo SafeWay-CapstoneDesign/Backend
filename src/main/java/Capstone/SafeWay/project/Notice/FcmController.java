@@ -1,6 +1,7 @@
 package Capstone.SafeWay.project.Notice;
 
 import Capstone.SafeWay.project.Notice.Dto.FcmSendRequestDto;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,11 @@ public class FcmController {
 
     private final FcmService fcmService;
 
+    @Operation(
+            summary = "푸시 알림 전송",
+            description = "FCM을 사용하여 푸시 알림을 전송하는 API입니다. 알림 메시지와 함께 수신자 정보를 전달하여 알림을 보낼 수 있습니다. (아직 사용 x)",
+            tags = {"FCM"}
+    )
     @PostMapping("/send")
     public ResponseEntity<?> send(@RequestBody FcmSendRequestDto dto) {
         try {

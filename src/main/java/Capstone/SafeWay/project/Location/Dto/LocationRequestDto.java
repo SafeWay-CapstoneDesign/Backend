@@ -1,6 +1,7 @@
 package Capstone.SafeWay.project.Location.Dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.deser.std.NumberDeserializers;
 import lombok.AllArgsConstructor;
@@ -19,10 +20,10 @@ public class LocationRequestDto {
     private String startName;
     private String endName;
 
-    @JsonDeserialize(using = NumberDeserializers.BigDecimalDeserializer.class)
+    @JsonProperty("tdistance")
     private BigDecimal tDistance;
 
-    @JsonFormat(pattern = "HH:mm:ss")
+    @JsonProperty("ttime")
     private Time tTime;
 
     private Double latitude;

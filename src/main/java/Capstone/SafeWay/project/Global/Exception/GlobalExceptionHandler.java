@@ -4,13 +4,14 @@ import Capstone.SafeWay.project.Global.Exception.error.CustomException;
 import Capstone.SafeWay.project.Global.Exception.error.ErrorCode;
 import Capstone.SafeWay.project.Global.Exception.error.ErrorResponse;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.dao.DataIntegrityViolationException;
 
-
+@Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -23,6 +24,9 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<ErrorResponse> handleDuplicateEntry(DataIntegrityViolationException ex) {
+
+        log.error(ex.getMessage());
+        log.error(ex.getStackTrace().toString());
         return ResponseEntity.status(409)
                 .body(new ErrorResponse(409, "중복된 값이 존재합니다.", "DUPLICATE_ENTRY"));
     }

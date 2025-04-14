@@ -3,6 +3,7 @@ package Capstone.SafeWay.project.Cane;
 import Capstone.SafeWay.project.Cane.Dto.CaneRequestDto;
 import Capstone.SafeWay.project.Cane.Dto.CaneResponseDto;
 import Capstone.SafeWay.project.Global.Security.UserDetailsImpl;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +21,11 @@ public class CaneController {
 
     private final CaneService caneService;
 
-    // 지팡이 등록
+    @Operation(
+            summary = "지팡이 등록",
+            description = "사용자가 지팡이를 등록하는 API입니다. Bluetooth ID를 사용하여 지팡이를 등록합니다.",
+            tags = {"Cane"}
+    )
     @PostMapping("/register")
     public ResponseEntity<String> registerCane(@RequestBody CaneRequestDto dto) {
         UserDetailsImpl currentUser = getCurrentUser();
@@ -30,7 +35,11 @@ public class CaneController {
         return ResponseEntity.ok(result);
     }
 
-    // 내 지팡이 조회
+    @Operation(
+            summary = "내 지팡이 조회",
+            description = "사용자가 등록한 지팡이를 조회하는 API입니다. 현재 로그인된 사용자만 조회 가능합니다.",
+            tags = {"Cane"}
+    )
     @GetMapping("/my")
     public ResponseEntity<List<CaneResponseDto>> getMyCanes() {
         UserDetailsImpl currentUser = getCurrentUser();
@@ -40,7 +49,11 @@ public class CaneController {
         return ResponseEntity.ok(result);
     }
 
-    // 지팡이 연결
+    @Operation(
+            summary = "지팡이 연결",
+            description = "사용자가 특정 지팡이를 자신의 계정에 연결하는 API입니다.",
+            tags = {"Cane"}
+    )
     @PostMapping("/connect/{caneId}")
     public ResponseEntity<String> connectCane(@PathVariable Long caneId) {
         UserDetailsImpl currentUser = getCurrentUser();
@@ -50,7 +63,11 @@ public class CaneController {
         return ResponseEntity.ok(result);
     }
 
-    // 지팡이 연결 해제
+    @Operation(
+            summary = "지팡이 연결 해제",
+            description = "사용자가 특정 지팡이의 연결을 해제하는 API입니다.",
+            tags = {"Cane"}
+    )
     @PostMapping("/disconnect/{caneId}")
     public ResponseEntity<String> disconnectCane(@PathVariable Long caneId) {
         UserDetailsImpl currentUser = getCurrentUser();

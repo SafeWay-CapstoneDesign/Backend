@@ -6,6 +6,7 @@ import Capstone.SafeWay.project.User.Dto.BasicUserDto;
 import Capstone.SafeWay.project.User.UserEntity;
 import Capstone.SafeWay.project.User.UserRepository;
 import Capstone.SafeWay.project.User.UserService;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -24,6 +25,11 @@ class AuthController {
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
 
+    @Operation(
+            summary = "사용자 로그인",
+            description = "이메일과 비밀번호로 로그인하고, 인증된 사용자의 JWT 토큰을 반환하는 API입니다.",
+            tags = {"Auth"}
+    )
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequestDto dto) {
         UserEntity user = userRepository.findByEmail(dto.getEmail())
@@ -38,7 +44,11 @@ class AuthController {
         return ResponseEntity.ok().body(token);
     }
 
-    // 회원가입 (누구나 가능)
+    @Operation(
+            summary = "회원가입",
+            description = "새로운 사용자를 등록하는 API입니다. 사용자 정보를 받아서 회원가입을 진행합니다.",
+            tags = {"Auth"}
+    )
     @PostMapping
     public ResponseEntity<String> createUser(@RequestBody BasicUserDto basicUserDto) {
         log.info("회원가입 요청: {}", basicUserDto.getEmail());
@@ -47,6 +57,11 @@ class AuthController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
+    @Operation(
+            summary = "JWT 토큰 생성",
+            description = "사용자 ID로 JWT 토큰을 생성하는 API입니다. ID를 받아서 JWT 토큰을 반환합니다.",
+            tags = {"Auth"}
+    )
     @GetMapping("/jwt")
     public String getToken(@RequestParam Long userId){
         return jwtTokenProvider.token(userId);
