@@ -39,44 +39,33 @@ public class UserConnectionController {
     }
 
     @Operation(
-            summary = "보호자의 모든 연결 조회",
-            description = "보호자 ID를 기반으로 모든 연결을 조회하는 API입니다. 관리자(admin)는 모든 보호자의 연결을 조회할 수 있습니다.",
+            summary = "사용자의 모든 연결 조회",
+            description = "로그인된 사용자를 기반으로 모든 연결을 조회하는 API입니다. 관리자(admin)는 모든 사용자의 연결을 조회할 수 있습니다.",
             tags = {"UserConnections"}
     )
-    @GetMapping("/guardian")
-    public ResponseEntity<List<UserConnectionDto>> getConnectionsByGuardian(
+    @GetMapping("/connections")
+    public ResponseEntity<List<UserConnectionDto>> getConnections(
             @AuthenticationPrincipal UserDetailsImpl currentUser) {
 
-        // ADMIN or STAR 역할이 아니면 403 에러 발생
-        if (currentUser.getUser().getRole().equals("ADMIN") || currentUser.getUser().getRole().equals("GUARDIAN")) {
-            log.error("Unauthorized access: {}", currentUser.getUser().getRole());
-            return ResponseEntity.status(403).build(); // 403 Forbidden
+        List<UserConnectionDto> connections;
+
+        if (currentUser.getUser().getRole().equals("ADMIN")) {
+            log.info("관리자(admin)로서 모든 사용자의 연결 조회");
+            connections = userConnectionService.getAllConnections();
+        } else if (currentUser.getUser().getRole().equals("GUARDIAN")) {
+            log.info("보호자(guardian)로서 자신의 연결 조회");
+            connections = userConnectionService.getConnectionsByGuardian(currentUser.getUser().getId());
+        } else if (currentUser.getUser().getRole().equals("STAR")) {
+            log.info("사용자(star)로서 자신의 연결 조회");
+            connections = userConnectionService.getConnectionsByStar(currentUser.getUser().getId());
+        } else {
+            log.error("Unauthorized access attempt with role: {}", currentUser.getUser().getRole());
+            return ResponseEntity.status(403).build(); // Forbidden access
         }
 
-        // Guardian role 확인 후 보호자 연결 조회
-        List<UserConnectionDto> connections = userConnectionService.getConnectionsByGuardian(currentUser.getUser().getId());
         return ResponseEntity.ok(connections);
     }
 
-    @Operation(
-            summary = "사용자의 보호자 조회",
-            description = "사용자 ID를 기반으로 보호자 정보를 조회하는 API입니다. 관리자(admin)는 모든 사용자의 보호자 정보를 조회할 수 있습니다.",
-            tags = {"UserConnections"}
-    )
-    @GetMapping("/star")
-    public ResponseEntity<List<UserConnectionDto>> getConnectionsByStar(
-            @AuthenticationPrincipal UserDetailsImpl currentUser) {
-
-        // ADMIN or STAR 역할이 아니면 403 에러 발생
-        if (currentUser.getUser().getRole().equals("ADMIN") || currentUser.getUser().getRole().equals("STAR")) {
-            log.error("Unauthorized access: {}", currentUser.getUser().getRole());
-            return ResponseEntity.status(403).build(); // 403 Forbidden
-        }
-
-        // Star role 확인 후 사용자 연결 조회
-        List<UserConnectionDto> connections = userConnectionService.getConnectionsByStar(currentUser.getUser().getId());
-        return ResponseEntity.ok(connections);
-    }
 
     @Operation(
             summary = "보호자 존재 여부 확인",
