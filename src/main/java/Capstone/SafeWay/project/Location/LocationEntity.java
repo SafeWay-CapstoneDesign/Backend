@@ -35,4 +35,16 @@ public class LocationEntity {
 
     @Column(nullable = false)
     private Double longitude;
+
+    @Column(nullable = false)
+    private Long userId;
+
+    public void updateLocation(String startName, String endName, BigDecimal tDistance, Time tTime, Double latitude, Double longitude) {
+        this.startName = startName;
+        this.endName = endName;
+        this.tDistance = tDistance;
+        this.tTime = tTime;
+        this.latitude = latitude;
+        this.longitude = longitude;
+    }
 }

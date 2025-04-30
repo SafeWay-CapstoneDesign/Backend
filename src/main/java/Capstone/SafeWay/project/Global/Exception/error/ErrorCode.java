@@ -17,7 +17,9 @@ public enum ErrorCode {
     NO_CONNECTION_FOR_GUARDIAN(HttpStatus.NOT_FOUND, "해당 보호자에 대한 연결이 존재하지 않습니다."),
     CANE_NOT_FOUND(HttpStatus.NOT_FOUND, "지팡이를 찾을 수 없습니다."),
     DUPLICATE_ENTRY(HttpStatus.CONFLICT, "이미 등록된 블루투스 ID입니다."),
-    INVALID_CANE_OWNER(HttpStatus.FORBIDDEN, "본인의 지팡이만 삭제할 수 있습니다.");
+    INVALID_CANE_OWNER(HttpStatus.FORBIDDEN, "본인의 지팡이만 삭제할 수 있습니다."),
+    NO_CONNECTION_FOUND(HttpStatus.NOT_FOUND, "연결된 사용자가 존재하지 않습니다."),
+    NO_LOCATION_FOUND(HttpStatus.NOT_FOUND, "해당 사용자의 위치 정보가 존재하지 않습니다.");
 
 
     private final HttpStatus status;

@@ -7,4 +7,5 @@ public interface UserConnectionRepository extends JpaRepository<UserConnectionEn
     List<UserConnectionEntity> findByGuardianId(Long guardianId);
     List<UserConnectionEntity> findByStarId(Long starId);
     boolean existsByGuardianIdAndStarId(Long guardianId, Long starId);
+    UserConnectionEntity findFirstByGuardianIdOrStarId(Long guardianId, Long starId);
 }
